@@ -1,6 +1,7 @@
 package client;
 
 import callback.SensorCallBack;
+import com.alibaba.fastjson.JSONObject;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
@@ -14,20 +15,21 @@ import java.util.concurrent.TimeUnit;
 public class TemperatureTransducer {
 
     public static final String HOST = "tcp://127.0.0.1:1883";
-    public static final String TEMPERATURE_TOPIC = "Temperature";
+    public static final String TEMPERATURE_TOPIC = "LoT/Temperature";
     public static final String CONTROL_TOPIC = "Control";
     public static final int KEEP_ALIVE_INTERVAL = 3600;
     public static final int SEND_TEMP_INTERVAL = 10;
 
-    String clientId = "Test";
-    MqttClient client;
-    MqttConnectOptions options;
-    String userName = "admin";
-    String passWord = "admin";
+    public String MY_TOPIC;
+    public String clientId;
+    public MqttClient client;
+    public MqttConnectOptions options;
+    public String userName = "admin";
+    public String passWord = "admin";
 
-    ScheduledExecutorService scheduler;
+    public ScheduledExecutorService scheduler;
 
-    void start() {
+    public void start() {
         try {
             // host为主机名，clientId即连接MQTT的客户端ID，一般以唯一标识符表示，MemoryPersistence设置clientid的保存形式，默认为以内存保存
             client = new MqttClient(HOST, clientId, new MemoryPersistence());
@@ -45,7 +47,10 @@ public class TemperatureTransducer {
             options.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
             // 设置回调
             client.setCallback(new SensorCallBack());
-            MqttTopic tempTopic = client.getTopic(TEMPERATURE_TOPIC + "/" + clientId);
+
+            MY_TOPIC = TEMPERATURE_TOPIC + "/" + clientId;
+            MqttTopic tempTopic = client.getTopic(MY_TOPIC);
+
             MqttTopic ctrlTopic = client.getTopic(CONTROL_TOPIC);
             //setWill方法，如果项目中需要知道客户端是否掉线可以调用该方法。设置最终端口的通知消息
             options.setWill(tempTopic, (clientId + " disconnected").getBytes(), 2, true);
@@ -62,7 +67,7 @@ public class TemperatureTransducer {
         }
     }
 
-    class SendTemp implements Runnable {
+    public class SendTemp implements Runnable {
         public void run() {
             try {
                 sendTemp();
@@ -72,17 +77,17 @@ public class TemperatureTransducer {
         }
     }
 
-    void sendTemp() throws MqttException {
+    public void sendTemp() throws MqttException {
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String now = formatter.format(new Date());
         Random random = new Random();
-        String msg = now + ":" + (random.nextDouble() * 50 - 10) + "℃";
-        MqttMessage message = new MqttMessage(msg.getBytes());
-        client.publish(TEMPERATURE_TOPIC, message);
+        JSONObject msg = new JSONObject();
+        msg.put("date",now);
+        msg.put("location",clientId);
+        msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 50 - 10)));
+        MqttMessage message = new MqttMessage(msg.toJSONString().getBytes());
+        client.publish(MY_TOPIC, message);
     }
 
-    public static void main(String[] args) throws MqttException {
-        TemperatureTransducer client = new TemperatureTransducer();
-        client.start();
-    }
 }

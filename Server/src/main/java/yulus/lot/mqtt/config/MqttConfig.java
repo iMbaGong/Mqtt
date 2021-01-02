@@ -1,5 +1,7 @@
 package yulus.lot.mqtt.config;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
+import yulus.lot.mqtt.entity.Temperature;
 import yulus.lot.mqtt.service.TempService;
 
 
@@ -123,8 +126,12 @@ public class MqttConfig {
         return new MessageHandler() {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
-                tempService.update(message.getPayload().toString() + message.getHeaders().get("mqtt_receivedTopic"));
-                System.out.println("Get Message from " + message.getHeaders().get("mqtt_receivedTopic") + ": " + message.getPayload());
+                System.out.println("Get Message: " + message.getPayload());
+                if(!message.getPayload().toString().contains("disconnected")){
+                    JSONObject jsonObject = JSONObject.parseObject(message.getPayload().toString());
+                    tempService.update(JSON.toJavaObject(jsonObject, Temperature.class));
+                    System.out.println("save data");
+                }
             }
         };
     }
