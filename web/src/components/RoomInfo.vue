@@ -1,49 +1,103 @@
 <template>
     <div>
-        <div ref="myChart" style="height:140px;width: 100px"></div>
-        <p class="title">伦敦金</p>
+        <div ref="myChart" style="height:600px;width: 800px"></div>
     </div>
 </template>
 
 <script>
     let echarts = require('echarts/lib/echarts');
     require('echarts/lib/chart/bar')
+    require('echarts/lib/chart/line')
     // 引入提示框和title组件
     require('echarts/lib/component/tooltip')
     require('echarts/lib/component/title')
+    require('echarts/lib/component/toolbox')
+    require('echarts/lib/component/dataZoom')
     export default {
         name: "RoomInfo",
-        data(){
-            return{
-
-            }
+        data() {
+            return {}
         },
-        mounted(){
+        mounted() {
             this.draw();
         },
-        methods:{
-            draw(){
+        methods: {
+            draw() {
                 let chartRef = this.$refs.myChart;
                 let myChart = echarts.init(chartRef);
 
+                var base = +new Date(1968, 9, 3);
+                var oneDay = 24 * 3600 * 1000;
+                var date = [];
+
+                var data = [Math.random() * 300];
+
+                for (var i = 1; i < 20000; i++) {
+                    var now = new Date(base += oneDay);
+                    date.push([now.getFullYear(), now.getMonth() + 1, now.getDate()].join('/'));
+                    data.push(Math.round((Math.random() - 0.5) * 20 + data[i - 1]));
+                }
+
                 // 绘制图表
                 myChart.setOption({
-                    title: {
-                        text: 'ECharts 入门示例'
+                    tooltip: {
+                        trigger: 'axis',
+                        position: function (pt) {
+                            return [pt[0], '10%'];
+                        }
                     },
-                    tooltip: {},
-                    legend: {
-                        data:['销量']
+                    title: {
+                        left: 'center',
+                        text: '温度',
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            restore: {},
+                            saveAsImage: {}
+                        }
                     },
                     xAxis: {
-                        data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                        type: 'category',
+                        boundaryGap: false,
+                        data: date
                     },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'bar',
-                        data: [5, 20, 36, 10, 10, 20]
-                    }]
+                    yAxis: {
+                        type: 'value',
+                        boundaryGap: [0, '100%']
+                    },
+                    dataZoom: [{
+                        type: 'inside',
+                        start: 90,
+                        end: 100
+                    }, {
+                        start: 90,
+                        end: 100,
+                    }],
+                    series: [
+                        {
+                            name: '模拟数据',
+                            type: 'line',
+                            smooth: true,
+                            symbol: 'none',
+                            sampling: 'average',
+                            itemStyle: {
+                                color: 'rgb(255, 70, 131)'
+                            },
+                            areaStyle: {
+                                color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                                    offset: 0,
+                                    color: 'rgb(255, 158, 68)'
+                                }, {
+                                    offset: 1,
+                                    color: 'rgb(255, 70, 131)'
+                                }])
+                            },
+                            data: data
+                        }
+                    ]
                 });
             }
         }
