@@ -5,14 +5,14 @@
 </template>
 
 <script>
-    let echarts = require('echarts/lib/echarts');
-    require('echarts/lib/chart/bar')
-    require('echarts/lib/chart/line')
-    // 引入提示框和title组件
-    require('echarts/lib/component/tooltip')
-    require('echarts/lib/component/title')
-    require('echarts/lib/component/toolbox')
-    require('echarts/lib/component/dataZoom')
+    // let echarts = require('echarts/lib/echarts');
+    // require('echarts/lib/chart/bar')
+    // require('echarts/lib/chart/line')
+    // // 引入提示框和title组件
+    // require('echarts/lib/component/tooltip')
+    // require('echarts/lib/component/title')
+    // require('echarts/lib/component/toolbox')
+    // require('echarts/lib/component/dataZoom')
     export default {
         name: "RoomInfo",
         data() {
@@ -24,7 +24,7 @@
         methods: {
             draw() {
                 let chartRef = this.$refs.myChart;
-                let myChart = echarts.init(chartRef);
+                let myChart = this.$echarts.init(chartRef);
 
                 var base = +new Date(1968, 9, 3);
                 var oneDay = 24 * 3600 * 1000;

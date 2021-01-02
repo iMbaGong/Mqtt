@@ -2,7 +2,9 @@
     <el-menu
         default-active="OverView"
         router
-        active-text-color="blue">
+        active-text-color="blue"
+        style="background-color: rgba(255,255,255,0.5)"
+    >
         <el-menu-item index="OverView">
             <template slot="title">
                 <i class="iconfont icon-jiajushenghuo" style="margin: 0 3px 2px 0;font-size:15px"></i>
@@ -53,5 +55,7 @@ export default {
 </script>
 
 <style scoped>
-
+el-menu{
+    ;
+}
 </style>
