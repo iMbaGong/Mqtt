@@ -1,6 +1,7 @@
 package yulus.lot.mqtt.config;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
+import yulus.lot.mqtt.service.TempService;
 
 
 @Configuration
@@ -39,24 +41,29 @@ public class MqttConfig {
     @Value("${spring.mqtt.default.topic}")
     private String defaultTopic;
 
+    @Autowired
+    TempService tempService;
+
     @Bean
-    public MqttConnectOptions getMqttConnectOptions(){
-        MqttConnectOptions mqttConnectOptions=new MqttConnectOptions();
+    public MqttConnectOptions getMqttConnectOptions() {
+        MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setUserName(username);
         mqttConnectOptions.setPassword(password.toCharArray());
         mqttConnectOptions.setServerURIs(new String[]{hostUrl});
         return mqttConnectOptions;
     }
+
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
         factory.setConnectionOptions(getMqttConnectOptions());
         return factory;
     }
+
     @Bean
     @ServiceActivator(inputChannel = "mqttOutboundChannel")
     public MessageHandler mqttOutbound() {
-        MqttPahoMessageHandler messageHandler =  new MqttPahoMessageHandler(clientId, mqttClientFactory());
+        MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler(clientId, mqttClientFactory());
         messageHandler.setAsync(true);
         messageHandler.setDefaultTopic(defaultTopic);
         return messageHandler;
@@ -72,8 +79,6 @@ public class MqttConfig {
 
     @Value("${spring.mqtt.consumer.clientId}")
     private String consumerClientId;
-
-
 
 
     /**
@@ -118,7 +123,8 @@ public class MqttConfig {
         return new MessageHandler() {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
-                System.out.println("MqttSenderConfigClass.handleMessage"+message.getPayload()+message.toString());
+                tempService.update(message.getPayload().toString() + message.getHeaders().get("mqtt_receivedTopic"));
+                System.out.println("Get Message from " + message.getHeaders().get("mqtt_receivedTopic") + ": " + message.getPayload());
             }
         };
     }
