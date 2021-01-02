@@ -1,0 +1,44 @@
+{
+  "id": "2305020",
+  "name": "Mqtt",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "848292",
+      "name": "家居百货",
+      "font_class": "jiajubaihuo",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "259475",
+      "name": "家居家纺",
+      "font_class": "jiajujiafang",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "6228186",
+      "name": "家居生活",
+      "font_class": "jiajushenghuo",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "11427109",
+      "name": "家居浴缸",
+      "font_class": "jiajuyugang-",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "13672659",
+      "name": "阳台",
+      "font_class": "yangtai",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    }
+  ]
+}
