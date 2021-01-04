@@ -1,16 +1,27 @@
 package yulus.lot.mqtt.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import javafx.print.Collation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import yulus.lot.mqtt.entity.Temperature;
+
+import com.alibaba.fastjson.JSONArray;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import yulus.lot.mqtt.entity.TempData;
+
 import yulus.lot.mqtt.gateway.MqttGateway;
 import yulus.lot.mqtt.service.TempService;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
+
+import java.io.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 @RestController
 @RequestMapping("/api")
@@ -37,6 +48,7 @@ public class MqttController {
         mqttGateway.sendToMqtt(location, "LoT/Control");
         return "请求成功";
     }
+
 
     @CrossOrigin
     @GetMapping("/allTemperature")
@@ -84,4 +96,47 @@ public class MqttController {
             temps.add(temperature);
         }
     }
+
+    @GetMapping("/readJson")
+    public String readJson() {
+        String jsonStr = "";
+        try {
+            File jsonFile = new File("src/main/resources/temp.json");
+            FileReader fileReader = new FileReader(jsonFile);
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            int ch = 0;
+            StringBuffer sb = new StringBuffer();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        JSONArray jsonArray = JSONArray.parseArray(jsonStr);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            TempData tempData = jsonArray.getJSONObject(i).toJavaObject(TempData.class);
+            int h=0,l=0;
+            String regEx="-?[1-9]\\d*";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(tempData.getLTemp());
+            if(m.find()){
+                l = Integer.parseInt(m.group(0));
+            }
+            m = p.matcher(tempData.getHTemp());
+            if(m.find()){
+                h = Integer.parseInt(m.group(0));
+            }
+            tempData.setTemp((h+l)/2);
+            System.out.println(tempData.getTemp());
+        }
+        return "请求成功";
+    }
+
+
+
 }
