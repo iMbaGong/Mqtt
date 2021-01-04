@@ -17,6 +17,7 @@
         },
         methods: {
             drawLine() {
+
                 let chartRef = this.$refs.chart;
                 let myChart = this.$echarts.init(chartRef);
                 myChart.setOption({

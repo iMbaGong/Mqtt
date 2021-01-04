@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "temperature")
 @JsonIgnoreProperties({"handle","hibernateLazyInitializer"})
-public class Temperature {
+public class Temperature implements Comparable<Temperature>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
@@ -20,4 +20,9 @@ public class Temperature {
     Date date;
     String location;
     float temp;
+
+    @Override
+    public int compareTo(Temperature temperature){
+        return this.date.compareTo(temperature.date);
+    }
 }

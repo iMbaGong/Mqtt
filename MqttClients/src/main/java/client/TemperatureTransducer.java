@@ -6,6 +6,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -16,9 +17,9 @@ public class TemperatureTransducer {
 
     public static final String HOST = "tcp://127.0.0.1:1883";
     public static final String TEMPERATURE_TOPIC = "LoT/Temperature";
-    public static final String CONTROL_TOPIC = "Control";
+    public static final String CONTROL_TOPIC = "LoT/Control";
     public static final int KEEP_ALIVE_INTERVAL = 3600;
-    public static final int SEND_TEMP_INTERVAL = 10;
+    public static final int SEND_TEMP_INTERVAL = 1200;
 
     public String MY_TOPIC;
     public String clientId;
@@ -26,6 +27,8 @@ public class TemperatureTransducer {
     public MqttConnectOptions options;
     public String userName = "admin";
     public String passWord = "admin";
+
+    public ArrayList<Float> tempFunc;
 
     public ScheduledExecutorService scheduler;
 
@@ -46,7 +49,7 @@ public class TemperatureTransducer {
             // 设置会话心跳时间 单位为秒 服务器会每隔1.5*20秒的时间向客户端发送个消息判断客户端是否在线，但这个方法并没有重连的机制
             options.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
             // 设置回调
-            client.setCallback(new SensorCallBack());
+            client.setCallback(new SensorCallBack(this));
 
             MY_TOPIC = TEMPERATURE_TOPIC + "/" + clientId;
             MqttTopic tempTopic = client.getTopic(MY_TOPIC);
@@ -78,16 +81,33 @@ public class TemperatureTransducer {
     }
 
     public void sendTemp() throws MqttException {
-
+        Date cur = new Date();
+        int index = cur.getHours()*3+cur.getMinutes()/20;
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String now = formatter.format(new Date());
+        String now = formatter.format(cur);
         Random random = new Random();
         JSONObject msg = new JSONObject();
         msg.put("date",now);
         msg.put("location",clientId);
-        msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 50 - 10)));
+        msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 5 - 2.5+tempFunc.get(index))));
         MqttMessage message = new MqttMessage(msg.toJSONString().getBytes());
         client.publish(MY_TOPIC, message);
+    }
+
+    public void initData() throws MqttException {
+        Date cur = new Date();
+        long twMin = 1000*60*20;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Random random = new Random();
+        for(int i=0;i<7*24*3;i++){
+            Date time = new Date(cur.getTime()+twMin*i);
+            JSONObject msg = new JSONObject();
+            msg.put("date",formatter.format(time));
+            msg.put("location",clientId);
+            msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 40 - 10)));
+            MqttMessage message = new MqttMessage(msg.toJSONString().getBytes());
+            client.publish(MY_TOPIC, message);
+        }
     }
 
 }

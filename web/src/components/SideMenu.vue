@@ -17,25 +17,25 @@
                 <span>客厅</span>
             </template>
         </el-menu-item>
-        <el-menu-item index="" >
+        <el-menu-item index="DiningRoom" >
             <template slot="title">
                 <i class="el-icon-fork-spoon" style="margin: 0 0 2px 0;font-size:19px"></i>
                 <span>餐厅</span>
             </template>
         </el-menu-item>
-        <el-menu-item index="">
+        <el-menu-item index="BedRoom">
             <template slot="title">
                 <i class="iconfont icon-jiajubaihuo" style="margin: 0 3px 2px 0"></i>
                 <span>卧室</span>
             </template>
         </el-menu-item>
-        <el-menu-item index="">
+        <el-menu-item index="BathRoom">
             <template slot="title">
                 <i class="iconfont icon-jiajuyugang-" style="margin: 0 3px 2px 0"></i>
                 <span>浴室</span>
             </template>
         </el-menu-item>
-        <el-menu-item index="">
+        <el-menu-item index="Balcony">
             <template slot="title">
                 <i class="iconfont icon-yangtai" style="margin: 0 3px 2px 0"></i>
                 <span>阳台</span>
