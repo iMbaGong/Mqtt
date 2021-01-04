@@ -1,9 +1,9 @@
 <template>
-    <body>
+
     <div id="app">
         <router-view/>
     </div>
-    </body>
+
 
 </template>
 
@@ -26,6 +26,6 @@ export default {
   color: #2c3e50;
 }
 body{
-    background-color:whitesmoke;
+
 }
 </style>
