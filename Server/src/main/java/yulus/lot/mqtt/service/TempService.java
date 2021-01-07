@@ -17,6 +17,10 @@ public class TempService {
         tempDAO.save(data);
     }
 
+    public void update(List<Temperature> temps){
+        tempDAO.saveAll(temps);
+    }
+
     public List<Temperature> getByLocation(String location){
         Date now = new Date();
         now.setTime(now.getTime()-1000*3600*24*14);

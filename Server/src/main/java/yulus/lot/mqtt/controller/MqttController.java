@@ -2,6 +2,7 @@ package yulus.lot.mqtt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import yulus.lot.mqtt.entity.LivingTemp;
 import yulus.lot.mqtt.entity.Temperature;
 
 import com.alibaba.fastjson.JSONArray;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import yulus.lot.mqtt.entity.TempData;
 
 import yulus.lot.mqtt.gateway.MqttGateway;
+import yulus.lot.mqtt.service.LivingService;
 import yulus.lot.mqtt.service.TempService;
 
 import javax.annotation.Resource;
@@ -31,6 +33,8 @@ public class MqttController {
     private MqttGateway mqttGateway;
     @Autowired
     TempService tempService;
+    @Autowired
+    LivingService livingService;
 
     @CrossOrigin
     @GetMapping("/currentTemperature")
@@ -52,58 +56,118 @@ public class MqttController {
 
     @CrossOrigin
     @GetMapping("/allTemperature")
-    public List<Temperature> getAllTemp(@RequestParam(name = "location") String location) {
-        List<Temperature> temps = tempService.getByLocation(location);
-        predict(temps,location);
-        Collections.sort(temps);
-        return temps;
-    }
-
-    @GetMapping("/init")
-    public void init(){
-        Date cur = new Date();
-        long twMin = 1000*60*20;
-        Random random = new Random();
-        for(int i=0;i<7*24*3;i++){
-            System.out.println(i);
-            Date time = new Date(cur.getTime()-twMin*i);
-            Temperature temperature = new Temperature();
-            temperature.setTemp(random.nextFloat() * 40 - 10);
-            temperature.setLocation("Balcony");
-            temperature.setDate(time);
-            tempService.update(temperature);
+    public List getAllTemp(@RequestParam(name = "location") String location,
+                           @RequestParam(name = "type") String type) { ;
+        switch (location) {
+            case "LivingRoom": {
+                List<LivingTemp> list = livingService.getByDate(type);
+                predict(list, type);
+                Collections.sort(list);
+                return list;
+            }
+            case "BedRoom":
+            case "DiningRoom":
+            case "BathRoom":
+            case "balcony":
+            default:
+                return null;
         }
     }
 
 
-    void predict(List<Temperature> temps,String location) {
-        float preTemp[] = new float[72];
-        for (Temperature t :
-                temps) {
-            int index = t.getDate().getHours() * 3 + t.getDate().getMinutes() / 20;
-            if (preTemp[index] == 0)
-                preTemp[index] = t.getTemp();
-            else
-                preTemp[index] = (preTemp[index] + t.getTemp()) / 2;
-        }
-        Date now = new Date();
-        int index = now.getHours()*3+now.getMinutes()/20;
-        for(int i=0;i<72;i++){
-            Temperature temperature = new Temperature();
-            temperature.setDate(new Date(now.getTime()+i*1000*60*20));
-            temperature.setLocation(location);
-            temperature.setTemp(preTemp[(index+i)%72]);
-            temps.add(temperature);
+    <T extends Temperature>  void predict(List<T> temps, String type) {
+        float preTemp[];
+        switch (type){
+            case "day":{
+                preTemp = new float[96];
+                for (T t :
+                        temps) {
+                    int index = t.getDate().getHours() * 3 + t.getDate().getMinutes() / 20;
+                    if (preTemp[index] == 0)
+                        preTemp[index] = t.getTemp();
+                    else
+                        preTemp[index] = (preTemp[index] + t.getTemp()) / 2;
+                }
+                Date now = new Date();
+                int index = now.getHours() * 3 + now.getMinutes() / 20;
+                for(int i=0;i<96;i++){
+                    Temperature temperature = new Temperature();
+                    temperature.setDate(new Date(now.getTime() + i * 1000 * 60 * 20));
+                    temperature.setTemp(preTemp[(index + i) % 72]);
+                    temps.add((T)temperature);
+                }
+                break;
+            }
+            case "week":{
+            }
+            case "month":{
+                preTemp = new float[96*31];
+                for (T t :
+                        temps) {
+                    int index = t.getDate().getMinutes() / 20 + t.getDate().getHours() * 3 +(t.getDate().getDay()-1)*96;
+                    if (preTemp[index] == 0)
+                        preTemp[index] = t.getTemp();
+                    else
+                        preTemp[index] = (preTemp[index] + t.getTemp()) / 2;
+                }
+                break;
+            }
+            case "year":
+            case "years":{
+                preTemp = new float[96*365];
+                break;
+            }
+            default:
+                preTemp = new float[96*365];
         }
     }
 
     @GetMapping("/readJson")
-    public String readJson() {
+    public String initAll() {
+        JSONArray allData = readJson("temp.json");
+        JSONArray livingData = readJson("LivingRoom.json");
+
+        float livingArr[] = new float[96];
+        for (int i = 0; i < 96; i++) {
+            livingArr[i] = livingData.getFloat(i);
+        }
+        long ftMin = 1000 * 60 * 15;
+        Random random = new Random();
+        for (int i = 0; i < allData.size(); i++) {
+            TempData tempData = allData.getJSONObject(i).toJavaObject(TempData.class);
+            int h = 0, l = 0;
+            String regEx = "-?[1-9]\\d*";
+            Pattern p = Pattern.compile(regEx);
+            Matcher m = p.matcher(tempData.getLTemp());
+            if (m.find()) {
+                l = Integer.parseInt(m.group(0));
+            }
+            m = p.matcher(tempData.getHTemp());
+            if (m.find()) {
+                h = Integer.parseInt(m.group(0));
+            }
+            tempData.setTemp((h + l) / 2);
+            long time = tempData.getDate().getTime();
+            List<LivingTemp> temps = new ArrayList<>();
+            for (int j = 0; j < 96; j++) {
+                LivingTemp temp = new LivingTemp();
+                temp.setDate(new Date(time + ftMin * j));
+                temp.setTemp(tempData.getTemp() + livingArr[j] + random.nextFloat() * 2 - 1.0f);
+                temps.add(temp);
+                System.out.println(i * 96 + j);
+            }
+            livingService.update(temps);
+        }
+        return "请求成功";
+    }
+
+
+    JSONArray readJson(String filename) {
         String jsonStr = "";
         try {
-            File jsonFile = new File("src/main/resources/temp.json");
+            File jsonFile = new File("src/main/resources/" + filename);
             FileReader fileReader = new FileReader(jsonFile);
-            Reader reader = new InputStreamReader(new FileInputStream(jsonFile),"utf-8");
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile), "utf-8");
             int ch = 0;
             StringBuffer sb = new StringBuffer();
             while ((ch = reader.read()) != -1) {
@@ -115,28 +179,7 @@ public class MqttController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        JSONArray jsonArray = JSONArray.parseArray(jsonStr);
-        for (int i = 0; i < jsonArray.size(); i++) {
-            TempData tempData = jsonArray.getJSONObject(i).toJavaObject(TempData.class);
-            int h=0,l=0;
-            String regEx="-?[1-9]\\d*";
-            Pattern p = Pattern.compile(regEx);
-            Matcher m = p.matcher(tempData.getLTemp());
-            if(m.find()){
-                l = Integer.parseInt(m.group(0));
-            }
-            m = p.matcher(tempData.getHTemp());
-            if(m.find()){
-                h = Integer.parseInt(m.group(0));
-            }
-            tempData.setTemp((h+l)/2);
-            System.out.println(tempData.getTemp());
-        }
-        return "请求成功";
+        return JSONArray.parseArray(jsonStr);
     }
-
-
 
 }

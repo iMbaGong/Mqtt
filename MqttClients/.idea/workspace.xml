@@ -2,28 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="358a9562-8958-4896-a49d-36d0049d7936" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../web/src/components/Balcony.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../web/src/components/BathRoom.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../web/src/components/BedRoom.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../web/src/components/DiningRoom.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/callback/SensorCallBack.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/callback/SensorCallBack.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/client/TemperatureTransducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/client/TemperatureTransducer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/callback/SensorCallBack.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/callback/SensorCallBack.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/client/TemperatureTransducer$SendTemp.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/client/TemperatureTransducer$SendTemp.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/client/TemperatureTransducer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/client/TemperatureTransducer.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/controller/MqttController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/controller/MqttController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/dao/TempDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/dao/TempDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/entity/Temperature.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/entity/Temperature.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/service/TempService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/yulus/lot/mqtt/service/TempService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../web/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../web/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/src/components/LivingRoom.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/components/LivingRoom.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/src/components/Overview.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/components/Overview.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/resources/temp.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/resources/temp.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../web/src/components/RoomInfo.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/components/RoomInfo.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/src/components/SideMenu.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/components/SideMenu.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../web/src/router/index.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -99,7 +82,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/client/TemperatureTransducer.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="725">
-              <caret line="105" column="41" lean-forward="true" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="41" />
+              <caret line="105" column="41" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -123,7 +106,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/client/BalconyTT.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
+            <state relative-caret-position="168">
               <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
               <folding>
                 <element signature="e#94#95#0" expanded="true" />
@@ -197,7 +180,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -244,6 +226,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -342,17 +325,18 @@
       <workItem from="1609649553163" duration="8000" />
       <workItem from="1609656237044" duration="2766000" />
       <workItem from="1609684303616" duration="2352000" />
+      <workItem from="1609949257581" duration="619000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20141000" />
+    <option name="totallyTimeSpent" value="20760000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26332623" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -502,16 +486,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.4/org.eclipse.paho.client.mqttv3-1.2.4.jar!/org/eclipse/paho/client/mqttv3/IMqttClient.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/client/BalconyTT.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
+        <state relative-caret-position="168">
           <caret line="9" column="26" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
           <folding>
             <element signature="e#94#95#0" expanded="true" />
@@ -520,10 +497,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/eclipse/paho/org.eclipse.paho.client.mqttv3/1.2.4/org.eclipse.paho.client.mqttv3-1.2.4.jar!/org/eclipse/paho/client/mqttv3/IMqttClient.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="600">
+          <caret line="28" column="9" selection-start-line="28" selection-start-column="9" selection-end-line="28" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/client/TemperatureTransducer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="725">
-          <caret line="105" column="41" lean-forward="true" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="41" />
+          <caret line="105" column="41" selection-start-line="105" selection-start-column="41" selection-end-line="105" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
