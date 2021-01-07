@@ -7,11 +7,12 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Date;
 
-
+@Getter
+@Setter
 @Entity
-@Table(name = "livingroomtemp")
+@Table(name = "bedroomtemp")
 @JsonIgnoreProperties({"handle","hibernateLazyInitializer"})
-public class LivingTemp implements Comparable<LivingTemp>{
+public class BedTemp implements Comparable<BedTemp>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
@@ -19,7 +20,8 @@ public class LivingTemp implements Comparable<LivingTemp>{
     float temp;
 
     @Override
-    public int compareTo(LivingTemp temperature){
+    public int compareTo(BedTemp temperature){
         return this.date.compareTo(temperature.date);
     }
+
 }

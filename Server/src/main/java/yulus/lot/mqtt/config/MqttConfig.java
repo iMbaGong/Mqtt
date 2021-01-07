@@ -1,9 +1,7 @@
 package yulus.lot.mqtt.config;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,8 +19,6 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
-import yulus.lot.mqtt.entity.Temperature;
-import yulus.lot.mqtt.service.TempService;
 
 
 @Configuration
@@ -44,8 +40,6 @@ public class MqttConfig {
     @Value("${spring.mqtt.default.topic}")
     private String defaultTopic;
 
-    @Autowired
-    TempService tempService;
 
     @Bean
     public MqttConnectOptions getMqttConnectOptions() {
@@ -129,7 +123,7 @@ public class MqttConfig {
                 System.out.println("Get Message: " + message.getPayload());
                 if(!message.getPayload().toString().contains("disconnected")){
                     JSONObject jsonObject = JSONObject.parseObject(message.getPayload().toString());
-                    tempService.update(JSON.toJavaObject(jsonObject, Temperature.class));
+                    //tempService.update(JSON.toJavaObject(jsonObject, Temperature.class));
                     System.out.println("save data");
                 }
             }

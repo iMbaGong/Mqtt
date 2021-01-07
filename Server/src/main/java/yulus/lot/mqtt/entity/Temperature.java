@@ -9,8 +9,6 @@ import java.util.Date;
 @Getter
 @Setter
 public class Temperature implements Comparable<Temperature>{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
     Date date;
     float temp;

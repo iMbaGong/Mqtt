@@ -2,19 +2,16 @@ package yulus.lot.mqtt.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import yulus.lot.mqtt.entity.LivingTemp;
-import yulus.lot.mqtt.entity.Temperature;
+import yulus.lot.mqtt.entity.*;
 
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import yulus.lot.mqtt.entity.TempData;
 
 import yulus.lot.mqtt.gateway.MqttGateway;
-import yulus.lot.mqtt.service.LivingService;
-import yulus.lot.mqtt.service.TempService;
+import yulus.lot.mqtt.service.*;
 
 import javax.annotation.Resource;
 
@@ -32,9 +29,15 @@ public class MqttController {
     @Resource
     private MqttGateway mqttGateway;
     @Autowired
-    TempService tempService;
-    @Autowired
     LivingService livingService;
+    @Autowired
+    BedService bedService;
+    @Autowired
+    BathService bathService;
+    @Autowired
+    DiningService diningService;
+    @Autowired
+    BalconyService balconyService;
 
     @CrossOrigin
     @GetMapping("/currentTemperature")
@@ -61,14 +64,35 @@ public class MqttController {
         switch (location) {
             case "LivingRoom": {
                 List<LivingTemp> list = livingService.getByDate(type);
-                predict(list, type);
+                //predict(list, type);
                 Collections.sort(list);
                 return list;
             }
-            case "BedRoom":
-            case "DiningRoom":
-            case "BathRoom":
-            case "balcony":
+            case "BedRoom":{
+                List<BedTemp> list = bedService.getByDate(type);
+                //predict(list, type);
+                Collections.sort(list);
+                return list;
+            }
+
+            case "DiningRoom":{
+                List<DiningTemp> list = diningService.getByDate(type);
+                //predict(list, type);
+                Collections.sort(list);
+                return list;
+            }
+            case "BathRoom":{
+                List<BathTemp> list = bathService.getByDate(type);
+                //predict(list, type);
+                Collections.sort(list);
+                return list;
+            }
+            case "balcony":{
+                List<BalconyTemp> list = balconyService.getByDate(type);
+                //predict(list, type);
+                Collections.sort(list);
+                return list;
+            }
             default:
                 return null;
         }
@@ -125,7 +149,7 @@ public class MqttController {
     @GetMapping("/readJson")
     public String initAll() {
         JSONArray allData = readJson("temp.json");
-        JSONArray livingData = readJson("LivingRoom.json");
+        JSONArray livingData = readJson("BedRoom.json");
 
         float livingArr[] = new float[96];
         for (int i = 0; i < 96; i++) {
@@ -148,15 +172,15 @@ public class MqttController {
             }
             tempData.setTemp((h + l) / 2);
             long time = tempData.getDate().getTime();
-            List<LivingTemp> temps = new ArrayList<>();
+            List<BedTemp> temps = new ArrayList<>();
             for (int j = 0; j < 96; j++) {
-                LivingTemp temp = new LivingTemp();
+                BedTemp temp = new BedTemp();
                 temp.setDate(new Date(time + ftMin * j));
                 temp.setTemp(tempData.getTemp() + livingArr[j] + random.nextFloat() * 2 - 1.0f);
                 temps.add(temp);
                 System.out.println(i * 96 + j);
             }
-            livingService.update(temps);
+            bedService.update(temps);
         }
         return "请求成功";
     }

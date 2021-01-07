@@ -1,17 +1,14 @@
 package yulus.lot.mqtt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
-
 @Entity
-@Table(name = "livingroomtemp")
+@Table(name = "bathroomtemp")
 @JsonIgnoreProperties({"handle","hibernateLazyInitializer"})
-public class LivingTemp implements Comparable<LivingTemp>{
+public class BathTemp implements Comparable<BathTemp>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
@@ -19,7 +16,7 @@ public class LivingTemp implements Comparable<LivingTemp>{
     float temp;
 
     @Override
-    public int compareTo(LivingTemp temperature){
+    public int compareTo(BathTemp temperature){
         return this.date.compareTo(temperature.date);
     }
 }
