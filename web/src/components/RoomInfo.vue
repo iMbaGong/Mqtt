@@ -81,21 +81,22 @@
                         if(resp)
                         console.log("data back");
                         _this.tempInfo = resp.data
+                        console.log(resp.data)
                         let chartRef = this.$refs.myChart;
                         let myChart = this.$echarts.init(chartRef);
 
                         var date = [];
                         var data = [];
                         let preData = [];
-                        for (let i = 0; i < _this.tempInfo.length-72; i++) {
-                            date.push(_this.tranDate(_this.tempInfo[i].date));
-                            data.push(_this.tempInfo[i].temp);
+                        for (let i = 0; i < _this.tempInfo.temp.length; i++) {
+                            date.push(_this.tranDate(_this.tempInfo.temp[i].date));
+                            data.push(_this.tempInfo.temp[i].temp);
                             preData.push('-')
                         }
-                        for (let i=_this.tempInfo.length-72; i < _this.tempInfo.length; i++) {
-                            date.push(_this.tranDate(_this.tempInfo[i].date));
+                        for (let i=0; i < _this.tempInfo.pre.length; i++) {
+                            date.push(_this.tranDate(_this.tempInfo.pre[i].date));
                             data.push('-');
-                            preData.push(_this.tempInfo[i].temp)
+                            preData.push(_this.tempInfo.pre[i].temp)
                         }
                         // 绘制图表
                         console.log("load data")
@@ -130,10 +131,10 @@
                             },
                             dataZoom: [{
                                 type: 'inside',
-                                start: 75,
+                                start: 0,
                                 end: 100
                             }, {
-                                start: 75,
+                                start: 0,
                                 end: 100,
                             }],
                             series: [

@@ -1,7 +1,9 @@
 package yulus.lot.mqtt.config;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +21,8 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import org.springframework.util.StringUtils;
+import yulus.lot.mqtt.entity.*;
+import yulus.lot.mqtt.service.*;
 
 
 @Configuration
@@ -40,6 +44,16 @@ public class MqttConfig {
     @Value("${spring.mqtt.default.topic}")
     private String defaultTopic;
 
+    @Autowired
+    LivingService livingService;
+    @Autowired
+    BedService bedService;
+    @Autowired
+    BathService bathService;
+    @Autowired
+    DiningService diningService;
+    @Autowired
+    BalconyService balconyService;
 
     @Bean
     public MqttConnectOptions getMqttConnectOptions() {
@@ -121,9 +135,50 @@ public class MqttConfig {
             @Override
             public void handleMessage(Message<?> message) throws MessagingException {
                 System.out.println("Get Message: " + message.getPayload());
-                if(!message.getPayload().toString().contains("disconnected")){
+                if(message.getPayload().toString().contains("disconnected")){
+                    if(message.getPayload().toString().contains("BathRoom")){
+                        TTState.bathTT=false;
+                    }
+                    else if(message.getPayload().toString().contains("DiningRoom")){
+                        TTState.diningTT=false;
+                    }
+                    else if(message.getPayload().toString().contains("LivingRoom")){
+                        TTState.livingTT=false;
+                    }
+                    else if(message.getPayload().toString().contains("BedRoom")){
+                        TTState.bedTT=false;
+                    }
+                    else if(message.getPayload().toString().contains("Balcony")){
+                        TTState.balconyTT=false;
+                    }
+                }
+                else if(!message.getPayload().toString().contains("disconnected")){
                     JSONObject jsonObject = JSONObject.parseObject(message.getPayload().toString());
-                    //tempService.update(JSON.toJavaObject(jsonObject, Temperature.class));
+                    if(message.getPayload().toString().contains("BathRoom")){
+                        bathService.update(JSON.toJavaObject(jsonObject, BathTemp.class));
+                        TTState.bathTT=true;
+                        TTState.bathTemp = jsonObject.getFloat("temp");
+                    }
+                    else if(message.getPayload().toString().contains("DiningRoom")){
+                        diningService.update(JSON.toJavaObject(jsonObject, DiningTemp.class));
+                        TTState.diningTT=true;
+                        TTState.diningTemp = jsonObject.getFloat("temp");
+                    }
+                    else if(message.getPayload().toString().contains("LivingRoom")){
+                        livingService.update(JSON.toJavaObject(jsonObject, LivingTemp.class));
+                        TTState.livingTT=true;
+                        TTState.livingTemp = jsonObject.getFloat("temp");
+                    }
+                    else if(message.getPayload().toString().contains("BedRoom")){
+                        bedService.update(JSON.toJavaObject(jsonObject, BedTemp.class));
+                        TTState.bedTT=true;
+                        TTState.bedTemp = jsonObject.getFloat("temp");
+                    }
+                    else if(message.getPayload().toString().contains("Balcony")){
+                        balconyService.update(JSON.toJavaObject(jsonObject, BalconyTemp.class));
+                        TTState.balconyTT=true;
+                        TTState.balconyTemp = jsonObject.getFloat("temp");
+                    }
                     System.out.println("save data");
                 }
             }

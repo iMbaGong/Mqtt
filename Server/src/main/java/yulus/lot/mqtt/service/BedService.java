@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yulus.lot.mqtt.dao.BedDAO;
 import yulus.lot.mqtt.entity.BedTemp;
+import yulus.lot.mqtt.entity.LivingTemp;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,10 @@ public class BedService {
 
     @Autowired
     BedDAO bedDAO;
+
+    public void update(BedTemp temp){
+        bedDAO.save(temp);
+    }
 
     public void update(List<BedTemp> temps) {
         bedDAO.saveAll(temps);

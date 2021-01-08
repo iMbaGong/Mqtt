@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import yulus.lot.mqtt.dao.BalconyDAO;
 import yulus.lot.mqtt.entity.BalconyTemp;
+import yulus.lot.mqtt.entity.LivingTemp;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.List;
 public class BalconyService {
     @Autowired
     BalconyDAO balconyDAO;
+
+    public void update(BalconyTemp temp){
+        balconyDAO.save(temp);
+    }
 
     public void update(List<BalconyTemp> temps) {
         balconyDAO.saveAll(temps);

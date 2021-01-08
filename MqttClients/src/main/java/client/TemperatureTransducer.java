@@ -28,7 +28,7 @@ public class TemperatureTransducer {
     public String userName = "admin";
     public String passWord = "admin";
 
-    public ArrayList<Float> tempFunc;
+    public float tempFunc[];
 
     public ScheduledExecutorService scheduler;
 
@@ -89,7 +89,7 @@ public class TemperatureTransducer {
         JSONObject msg = new JSONObject();
         msg.put("date",now);
         msg.put("location",clientId);
-        msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 5 - 2.5+tempFunc.get(index))));
+        msg.put("temp",Float.parseFloat(String.format("%.2f",random.nextDouble() * 5 - 2.5+tempFunc[index])));
         MqttMessage message = new MqttMessage(msg.toJSONString().getBytes());
         client.publish(MY_TOPIC, message);
     }

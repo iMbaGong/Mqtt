@@ -18,6 +18,10 @@ public class LivingService {
         livingDAO.saveAll(temps);
     }
 
+    public void update(LivingTemp temp){
+        livingDAO.save(temp);
+    }
+
     public List<LivingTemp> getByDate(String type){
         long day = 1000*3600*24;
         long week = day*7;
